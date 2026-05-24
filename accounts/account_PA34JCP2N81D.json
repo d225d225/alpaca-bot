@@ -7,7 +7,7 @@
   "paper": true,
   "active": true,
   "strategy_id": "momentum_top10",
-  "email_to": "yourname@example.com",
+  "email_to": "lyf1228@gmail.com",
   "watchlists": {
     "tech": ["AAPL", "MSFT", "NVDA", "GOOGL", "META"],
     "ai":   ["NVDA", "PLTR", "AI", "SOUN", "BBAI"],
