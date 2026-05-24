@@ -17,6 +17,8 @@ jobs:
   trade:
     name: "執行交易 & 生成報告"
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       # ── 1. 取得程式碼 ──────────────────────────────────────────
