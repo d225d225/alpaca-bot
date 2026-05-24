@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AlpacaBot Strategy",
+  "type": "object",
+  "required": ["strategy_id", "name", "universe", "top_n", "alloc_pct"],
+  "properties": {
+    "strategy_id":        { "type": "string" },
+    "name":               { "type": "string" },
+    "universe":           { "type": "string", "enum": ["NASDAQ_TOP_MC", "SP500", "CUSTOM"] },
+    "top_n":              { "type": "integer", "minimum": 1, "maximum": 50 },
+    "alloc_pct":          { "type": "number",  "minimum": 1, "maximum": 100 },
+    "whole_shares":       { "type": "boolean" },
+    "stop_loss_pct":      { "type": "number",  "maximum": 0 },
+    "take_profit_pct":    { "type": "number",  "minimum": 0 },
+    "notify_on_trade":    { "type": "boolean" },
+    "custom_symbols":     { "type": "array",   "items": { "type": "string" } },
+    "rebalance": {
+      "type": "object",
+      "properties": {
+        "on_new_funds": { "type": "boolean" },
+        "monthly":      { "type": "boolean" }
+      }
+    },
+    "filters": {
+      "type": "object",
+      "properties": {
+        "min_price":   { "type": "number" },
+        "max_pe":      { "type": "number" },
+        "min_volume":  { "type": "integer" }
+      }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+name: "AlpacaBot Daily Trading"
+
+on:
+  # 每天 21:00 UTC = 台灣時間次日 05:00（美股盤後）
+  schedule:
+    - cron: "0 21 * * 1-5"   # 週一到週五
+
+  # 手動觸發（測試用）
+  workflow_dispatch:
+    inputs:
+      command:
+        description: "執行指令 (run / report / email / status)"
+        required: false
+        default: "run"
+
+jobs:
+  trade:
+    name: "執行交易 & 生成報告"
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. 取得程式碼 ──────────────────────────────────────────
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # ── 2. 設定 Python ─────────────────────────────────────────
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      # ── 3. 安裝套件 ────────────────────────────────────────────
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # ── 4. 執行主程式 ──────────────────────────────────────────
+      - name: Run AlpacaBot
+        env:
+          ALPACA_API_KEY:    ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_API_SECRET: ${{ secrets.ALPACA_API_SECRET }}
+          ALPACA_BASE_URL:   ${{ secrets.ALPACA_BASE_URL }}
+          SENDGRID_API_KEY:  ${{ secrets.SENDGRID_API_KEY }}
+          EMAIL_FROM:        ${{ secrets.EMAIL_FROM }}
+          EMAIL_TO:          ${{ secrets.EMAIL_TO }}
+          SMTP_HOST:         ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:         ${{ secrets.SMTP_PORT }}
+          SMTP_USER:         ${{ secrets.SMTP_USER }}
+          SMTP_PASS:         ${{ secrets.SMTP_PASS }}
+          POLYGON_API_KEY:   ${{ secrets.POLYGON_API_KEY }}
+        run: |
+          CMD="${{ github.event.inputs.command || 'run' }}"
+          echo "執行指令：$CMD"
+          python main.py $CMD
+
+      # ── 5. 提交報告（儲存歷史紀錄）────────────────────────────
+      - name: Commit reports
+        if: always()
+        run: |
+          git config user.name  "AlpacaBot[Actions]"
+          git config user.email "bot@alpacabot.local"
+          git add reports/ || true
+          git diff --cached --quiet || git commit -m "📊 自動報告 $(date -u +%Y-%m-%d)"
+          git push || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 6. 失敗通知 ────────────────────────────────────────────
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "⚠️ AlpacaBot 執行失敗！請檢查 Actions 日誌。"
+          # 可在此加入 Slack / Line Notify / Email 通知

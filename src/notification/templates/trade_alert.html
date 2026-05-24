@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<style>
+  body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; }
+  .wrap { max-width: 480px; margin: 24px auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,.1); }
+  .header-buy  { background: #059669; color: #fff; padding: 20px 28px; }
+  .header-sell { background: #dc2626; color: #fff; padding: 20px 28px; }
+  .header h2 { margin: 0; font-size: 1.4rem; }
+  .body { padding: 24px 28px; }
+  .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+  .row .key { color: #64748b; font-size: .9rem; }
+  .row .val { font-weight: 600; color: #0f172a; }
+  .footer { text-align: center; padding: 14px; font-size: .78rem; color: #94a3b8; background: #f8fafc; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="{{ 'header-buy' if action == 'BUY' else 'header-sell' }} header">
+    <h2>{{ '🟢 買入確認' if action == 'BUY' else '🔴 賣出確認' }}</h2>
+  </div>
+  <div class="body">
+    <div class="row"><span class="key">帳戶</span><span class="val">{{ account_id }}</span></div>
+    <div class="row"><span class="key">股票代碼</span><span class="val">{{ symbol }}</span></div>
+    <div class="row"><span class="key">動作</span><span class="val">{{ action }}</span></div>
+    <div class="row"><span class="key">股數</span><span class="val">{{ qty }} 股</span></div>
+    <div class="row"><span class="key">訂單 ID</span><span class="val" style="font-size:.8rem">{{ order_id }}</span></div>
+    <div class="row"><span class="key">狀態</span><span class="val">{{ status }}</span></div>
+    <div class="row"><span class="key">原因</span><span class="val">{{ reason }}</span></div>
+    <div class="row"><span class="key">時間 (UTC)</span><span class="val">{{ timestamp[:19] }}</span></div>
+  </div>
+  <div class="footer">AlpacaBot 自動通知 · 不構成投資建議</div>
+</div>
+</body>
+</html>

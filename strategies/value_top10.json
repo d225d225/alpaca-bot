@@ -1,0 +1,20 @@
+{
+  "strategy_id": "value_top10",
+  "name": "價值選股策略（低 PE 前十）",
+  "universe": "NASDAQ_TOP_MC",
+  "top_n": 10,
+  "alloc_pct": 10,
+  "whole_shares": true,
+  "stop_loss_pct": -10,
+  "take_profit_pct": 30,
+  "notify_on_trade": true,
+  "rebalance": {
+    "on_new_funds": true,
+    "monthly": true
+  },
+  "filters": {
+    "min_price": 10,
+    "max_pe": 30,
+    "min_volume": 500000
+  }
+}

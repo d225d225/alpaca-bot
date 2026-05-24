@@ -1,0 +1,16 @@
+{
+  "account_id": "PA34JCP2N81D",
+  "label": "Paper Trading Account",
+  "api_key_env": "ALPACA_API_KEY",
+  "api_secret_env": "ALPACA_API_SECRET",
+  "base_url": "https://paper-api.alpaca.markets/v2",
+  "paper": true,
+  "active": true,
+  "strategy_id": "momentum_top10",
+  "email_to": "yourname@example.com",
+  "watchlists": {
+    "tech": ["AAPL", "MSFT", "NVDA", "GOOGL", "META"],
+    "ai":   ["NVDA", "PLTR", "AI", "SOUN", "BBAI"],
+    "etf":  ["QQQ", "SPY", "VGT", "SOXX", "ARKK"]
+  }
+}
