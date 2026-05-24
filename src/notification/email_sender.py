@@ -19,13 +19,32 @@ def _send_smtp(to: str, subject: str, html: str, text: str = "") -> bool:
     if text:
         msg.attach(MIMEText(text, "plain", "utf-8"))
     msg.attach(MIMEText(html, "html", "utf-8"))
+
+    # Gmail App Password 去除空格（Google 顯示格式含空格，實際不需要）
+    smtp_pass = (config.SMTP_PASS or "").replace(" ", "")
+
+    # 方法一：STARTTLS（port 587）
     try:
         with smtplib.SMTP(config.SMTP_HOST, config.SMTP_PORT, timeout=15) as server:
             server.ehlo()
             server.starttls()
-            server.login(config.SMTP_USER, config.SMTP_PASS)
+            server.ehlo()          # STARTTLS 後需再 ehlo
+            server.login(config.SMTP_USER, smtp_pass)
             server.sendmail(config.EMAIL_FROM, to, msg.as_string())
-        logger.info("✉️  Email 寄送成功 → %s", to)
+        logger.info("✉️  Email 寄送成功（STARTTLS）→ %s", to)
+        return True
+    except smtplib.SMTPAuthenticationError as e:
+        logger.warning("STARTTLS 認證失敗，嘗試 SSL（port 465）：%s", e)
+    except Exception as e:
+        logger.warning("STARTTLS 失敗，嘗試 SSL（port 465）：%s", e)
+
+    # 方法二：SSL（port 465）fallback
+    try:
+        with smtplib.SMTP_SSL(config.SMTP_HOST, 465, timeout=15) as server:
+            server.ehlo()
+            server.login(config.SMTP_USER, smtp_pass)
+            server.sendmail(config.EMAIL_FROM, to, msg.as_string())
+        logger.info("✉️  Email 寄送成功（SSL）→ %s", to)
         return True
     except Exception as e:
         logger.error("Email 寄送失敗：%s", e)
