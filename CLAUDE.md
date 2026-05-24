@@ -154,6 +154,46 @@ pytest
 
 ---
 
+## Dashboard 部署（Streamlit Community Cloud）
+
+### 步驟
+1. 前往 [share.streamlit.io](https://share.streamlit.io)
+2. 連接 GitHub repo：`d225d225/alpaca-bot`
+3. Main file path：`streamlit_app.py`
+4. **App Settings → Secrets**，貼入以下內容（填入真實值）：
+
+```toml
+ALPACA_API_KEY    = "your_key"
+ALPACA_API_SECRET = "your_secret"
+ALPACA_BASE_URL   = "https://paper-api.alpaca.markets/v2"
+GITHUB_TOKEN      = ""          # 選填，提升 API rate limit
+EMAIL_TO          = "your@email.com"
+```
+
+### Dashboard 資料三層降級
+```
+① Alpaca 即時 API（有 secrets → 即時帳戶資料）
+       ↓ 無 Key 或失敗
+② GitHub JSON 報告（Actions 每日 commit，無需 API）
+       ↓ 沒報告
+③ 本地 reports/（本機開發 fallback）
+```
+
+---
+
+## GitHub Actions Secrets（已設定）
+
+| Secret | 說明 |
+|--------|------|
+| ALPACA_API_KEY | Alpaca API Key |
+| ALPACA_API_SECRET | Alpaca API Secret |
+| ALPACA_BASE_URL | https://paper-api.alpaca.markets/v2 |
+| EMAIL_TO | 收件 Email（需補填真實地址） |
+| SENDGRID_API_KEY | Email 服務（選填） |
+| SMTP_USER / SMTP_PASS | Gmail SMTP（選填） |
+
+---
+
 ## 投資風險提醒
 
 > ⚠️ 本系統僅供資訊整理與研究參考，不構成投資建議。
